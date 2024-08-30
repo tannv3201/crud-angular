@@ -1,0 +1,65 @@
+<form
+  [formGroup]="schoolForm"
+  class="d-block"
+  style="height: 100% !important; position: relative"
+>
+  <div class="d-flex flex-column gap-3">
+    <div class="d-flex flex-column gap-2">
+      <label htmlFor="name" class="!text-red-500">Tên trường học</label>
+      <input
+        pInputText
+        id="name"
+        aria-describedby="name-help"
+        formControlName="name"
+        [readOnly]="mode === 'view'"
+        [ngClass]="{
+          'is-invalid':
+            schoolForm.get('name')?.invalid && schoolForm.get('name')?.touched
+        }"
+      />
+      <div
+        *ngIf="
+          schoolForm.get('name')?.invalid && schoolForm.get('name')?.touched
+        "
+        class="invalid-feedback"
+      >
+        Tên trường học là bắt buộc.
+      </div>
+    </div>
+    <div class="d-flex flex-column gap-2">
+      <label htmlFor="address" class="!text-red-500">Địa chỉ</label>
+      <input
+        pInputText
+        [readOnly]="mode === 'view'"
+        id="address"
+        aria-describedby="address-help"
+        formControlName="address"
+        [ngClass]="{
+          'is-invalid':
+            schoolForm.get('address')?.invalid &&
+            schoolForm.get('address')?.touched
+        }"
+      />
+      <div
+        *ngIf="
+          schoolForm.get('address')?.invalid &&
+          schoolForm.get('address')?.touched
+        "
+        class="invalid-feedback"
+      >
+        Địa chỉ là bắt buộc.
+      </div>
+    </div>
+  </div>
+
+  <div class="position-absolute bottom-0 end-0" *ngIf="mode !== 'view'">
+    <div class="d-flex gap-3 justify-content-end">
+      <p-button
+        label="Hủy"
+        styleClass="p-button-raised p-button-text p-button-secondary"
+        (click)="ref.close()"
+      ></p-button>
+      <p-button label="Lưu" (click)="submit()"></p-button>
+    </div>
+  </div>
+</form>

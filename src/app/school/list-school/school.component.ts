@@ -1,8 +1,11 @@
-import { Component, Input, OnInit, Type } from '@angular/core';
+import { Component, Input, OnInit, Type, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { NgbModal, NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
 import { HttpProviderService } from '../../service/http-provider.service';
+import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
+import { DetailModalSchoolComponent } from '../detail-modal-school/detail-modal-school.component';
+import { ConfirmationService, MessageService } from 'primeng/api';
 
 @Component({
   selector: 'ng-modal-confirm',
@@ -60,14 +63,20 @@ const MODALS: { [name: string]: Type<any> } = {
   styleUrls: ['./school.component.scss'],
 })
 export class SchoolComponent implements OnInit {
+  @ViewChild(DetailModalSchoolComponent)
+  detailModalSchoolComponent!: DetailModalSchoolComponent;
   closeResult = '';
   schoolList: any = [];
   constructor(
     private router: Router,
+    private confirmationService: ConfirmationService,
     private modalService: NgbModal,
-    private toastr: ToastrService,
-    private httpProvider: HttpProviderService
+    private httpProvider: HttpProviderService,
+    private dialogService: DialogService,
+    private messageService: MessageService
   ) {}
+
+  ref?: DynamicDialogRef;
 
   ngOnInit(): void {
     this.getAllSchool();
@@ -94,17 +103,45 @@ export class SchoolComponent implements OnInit {
     this.router.navigate(['addSchool']);
   }
 
+  openSchoolDetailModal(school: any, mode: any) {
+    const _title =
+      mode == 'view' ? 'Chi tiết trường học' : 'Cập nhật trường học';
+    this.ref = this.dialogService.open(DetailModalSchoolComponent, {
+      header: _title,
+      width: '60%',
+      height: '60%',
+      contentStyle: { overflow: 'auto', height: '100%' },
+      baseZIndex: 10000,
+      maximizable: true,
+      data: {
+        school: school,
+        mode: mode,
+      },
+    });
+    this.ref.onClose.subscribe((res) => {
+      if (res) {
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Cập nhật',
+          detail: 'Cập nhật thành công',
+        });
+
+        this.getAllSchool();
+      }
+    });
+  }
+
   deleteSchoolConfirmation(school: any) {
     const modalRef = this.modalService.open(NgModalConfirm);
     modalRef.componentInstance.school = school; // Truyền dữ liệu vào modal
 
     modalRef.result.then(
-      (result) => {
+      (result: any) => {
         if (result) {
           this.deleteSchool(result);
         }
       },
-      (reason) => {
+      (reason: any) => {
         console.log(
           '🚀 ~ SchoolComponent ~ deleteSchoolConfirmation ~ reason:',
           reason
@@ -113,11 +150,43 @@ export class SchoolComponent implements OnInit {
     );
   }
 
+  confirm(event: Event, school: any) {
+    this.confirmationService.confirm({
+      target: event.target!,
+      message: `Bạn có chắc chắn muốn xóa ${school?.name}`,
+      icon: 'pi pi-exclamation-triangle',
+      accept: () => {
+        this.deleteSchool(school?.id);
+      },
+      reject: () => {
+        // this.messageService.add({
+        //   severity: 'error',
+        //   summary: 'Rejected',
+        //   detail: 'You have rejected',
+        // });
+      },
+    });
+  }
+
+  show() {
+    console.log(123);
+
+    this.messageService.add({
+      severity: 'success',
+      summary: 'Success',
+      detail: 'Message Content',
+    });
+  }
+
   deleteSchool(schoolId: any) {
-    console.log('🚀 ~ SchoolComponent ~ schoolId:', schoolId);
     this.httpProvider.deleteSchool(schoolId).subscribe(
       (data: any) => {
         this.getAllSchool();
+        this.messageService.add({
+          severity: 'info',
+          summary: 'Thành công',
+          detail: 'Bạn đã xóa thành công',
+        });
       },
       (error: any) => {
         if (error) {
@@ -129,5 +198,11 @@ export class SchoolComponent implements OnInit {
         }
       }
     );
+  }
+
+  ngOnDestroy() {
+    if (this.ref) {
+      this.ref.close();
+    }
   }
 }
