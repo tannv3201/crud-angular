@@ -1,0 +1,40 @@
+<div class="container-xl">
+  <div class="table-responsive">
+    <div class="table-wrapper">
+      <div class="table-title">
+        <div class="row">
+          <div class="col-sm-6">
+            <h4><b>Chi tiết trường học</b></h4>
+          </div>
+          <div class="col-sm-6">
+            <a href="#" routerLink="/school" class="btn btn-success back"
+              ><i class="fas fa-arrow-circle-left"></i> &nbsp;Trở về</a
+            >
+          </div>
+        </div>
+      </div>
+      <table
+        class="table table-striped table-hover table-bordered table-content"
+      >
+        <tbody>
+          <tr>
+            <td>
+              <label><b>Tên trường học</b></label>
+            </td>
+            <td>
+              <span>{{ schoolDetail.name }}</span>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <label><b>Địa chỉ</b></label>
+            </td>
+            <td>
+              <span>{{ schoolDetail.address }}</span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

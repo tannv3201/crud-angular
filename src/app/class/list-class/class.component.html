@@ -1,0 +1,55 @@
+<div class="container-xl">
+  <div class="table-responsive">
+    <div class="table-wrapper">
+      <div class="table-title">
+        <div class="row">
+          <div class="col-sm-6">
+            <h4><b>Trường học</b></h4>
+          </div>
+          <div class="col-sm-6">
+            <button class="btn btn-success" (click)="addClass()">
+              <i class="fas fa-plus-circle"></i><span>Thêm lớp học</span>
+            </button>
+          </div>
+        </div>
+      </div>
+      <table
+        class="table table-striped table-hover table-bordered table-content"
+      >
+        <thead>
+          <tr class="center-align">
+            <th>Tên lớp học</th>
+            <th>Trường học</th>
+            <th>Thao tác</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let class of classList">
+            <td>{{ class?.name }}</td>
+            <td>{{ class?.school?.name }}</td>
+            <td class="center-align">
+              <a href="#" [routerLink]="['/class/', class.id]" class="btn"
+                ><i class="fas fa-eye view"></i
+              ></a>
+              <a href="#" [routerLink]="['/editClass/', class.id]" class="btn"
+                ><i class="fa fa-edit edit"></i
+              ></a>
+              <button
+                type="button"
+                (click)="deleteClassConfirmation(class)"
+                class="btn"
+              >
+                <i class="fas fa-trash-alt delete"></i>
+              </button>
+            </td>
+          </tr>
+          <tr>
+            <td *ngIf="classList.length == 0" colspan="3" class="text-center">
+              Không có dữ liệu
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

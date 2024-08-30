@@ -1,0 +1,84 @@
+<div class="container-xl">
+  <div class="table-responsive">
+    <div class="table-wrapper">
+      <div class="table-title">
+        <div class="row">
+          <div class="col-sm-6">
+            <h4><b>Cập nhật trường học</b></h4>
+          </div>
+          <div class="col-sm-6">
+            <a href="#" routerLink="/school" class="btn btn-success back"
+              ><i class="fas fa-arrow-circle-left"></i> &nbsp;Trở về</a
+            >
+          </div>
+        </div>
+      </div>
+      <form #schoolForm="ngForm">
+        <div class="table-content">
+          <div class="form-group p-10 row">
+            <div class="col-sm-3">
+              <label for="name" class="p-t-b-10"
+                >Tên trường học<span class="requiredStar">*</span></label
+              >
+            </div>
+            <div class="col-sm-9">
+              <input
+                type="text"
+                class="form-control"
+                id="name"
+                required
+                maxlength="255"
+                [(ngModel)]="editEmployeeForm.name"
+                name="name"
+                #name="ngModel"
+              />
+              <div
+                *ngIf="name.errors && isSubmitted"
+                class="alert alert-danger validationError"
+              >
+                <div [hidden]="!name.errors?.['required']">
+                  Tên trường học bắt buộc
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="form-group p-10 row">
+            <div class="col-sm-3">
+              <label for="address" class="p-t-b-10"
+                >Địa chỉ<span class="requiredStar">*</span></label
+              >
+            </div>
+            <div class="col-sm-9">
+              <input
+                type="text"
+                class="form-control"
+                id="address"
+                required
+                maxlength="255"
+                [(ngModel)]="editEmployeeForm.address"
+                name="address"
+                #address="ngModel"
+              />
+              <div
+                *ngIf="address.errors && isSubmitted"
+                class="alert alert-danger validationError"
+              >
+                <div [hidden]="!address.errors?.['required']">
+                  Địa chỉ bắt buộc
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="table-footer">
+          <button
+            class="btn btn-success"
+            (click)="editSchool(schoolForm.form.valid)"
+          >
+            Lưu
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
