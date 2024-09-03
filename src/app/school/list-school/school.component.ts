@@ -105,7 +105,13 @@ export class SchoolComponent implements OnInit {
 
   openSchoolDetailModal(school: any, mode: any) {
     const _title =
-      mode == 'view' ? 'Chi tiết trường học' : 'Cập nhật trường học';
+      mode == 'view'
+        ? 'Chi tiết trường học'
+        : mode == 'edit'
+        ? 'Cập nhật trường học'
+        : mode == 'add'
+        ? 'Thêm trường học'
+        : '';
     this.ref = this.dialogService.open(DetailModalSchoolComponent, {
       header: _title,
       width: '60%',
@@ -120,11 +126,19 @@ export class SchoolComponent implements OnInit {
     });
     this.ref.onClose.subscribe((res) => {
       if (res) {
-        this.messageService.add({
-          severity: 'success',
-          summary: 'Cập nhật',
-          detail: 'Cập nhật thành công',
-        });
+        if (mode === 'add') {
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Thêm mới',
+            detail: 'Thêm mới thành công',
+          });
+        } else if (mode === 'edit') {
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Cập nhật',
+            detail: 'Cập nhật thành công',
+          });
+        }
 
         this.getAllSchool();
       }
@@ -169,8 +183,6 @@ export class SchoolComponent implements OnInit {
   }
 
   show() {
-    console.log(123);
-
     this.messageService.add({
       severity: 'success',
       summary: 'Success',

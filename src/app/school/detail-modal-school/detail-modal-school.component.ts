@@ -36,9 +36,9 @@ export class DetailModalSchoolComponent implements OnInit {
 
   submit() {
     if (this.schoolForm.valid) {
-      this.httpProvider
-        .updateSchool(this.config.data?.school?.id, this.schoolForm.value)
-        .subscribe(
+      if (this.mode == 'add') {
+        const { id, ...dataSubmit } = this.schoolForm.value;
+        this.httpProvider.createSchool(dataSubmit).subscribe(
           (data: any) => {
             if (data) {
               this.ref.close(this.schoolForm.value);
@@ -53,6 +53,25 @@ export class DetailModalSchoolComponent implements OnInit {
             }
           }
         );
+      } else if (this.mode == 'edit') {
+        this.httpProvider
+          .updateSchool(this.config.data?.school?.id, this.schoolForm.value)
+          .subscribe(
+            (data: any) => {
+              if (data) {
+                this.ref.close(this.schoolForm.value);
+              }
+            },
+            (error: any) => {
+              if (error) {
+                console.log(
+                  '🚀 ~ ViewEmployeeComponent ~ getDetailSchool ~ error:',
+                  error
+                );
+              }
+            }
+          );
+      }
       // Pass form value when closing modal
     } else {
       // Handle invalid form case
