@@ -31,6 +31,7 @@ import { InputTextModule } from 'primeng/inputtext';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { ToastModule } from 'primeng/toast';
 import { ConfirmPopupModule } from 'primeng/confirmpopup';
+import { CommonModule } from '@angular/common';
 
 @NgModule({
   declarations: [

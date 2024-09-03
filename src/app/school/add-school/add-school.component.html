@@ -36,7 +36,7 @@
                 *ngIf="name.errors && isSubmitted"
                 class="alert alert-danger validationError"
               >
-                <div [hidden]="!name.errors?.['required']">
+                <div [hidden]="!name?.errors?.['required']">
                   Tên trường bắt buộc
                 </div>
               </div>
@@ -63,7 +63,7 @@
                 *ngIf="address.errors && isSubmitted"
                 class="alert alert-danger validationError"
               >
-                <div [hidden]="!address.errors?.['required']">
+                <div [hidden]="!address?.errors?.['required']">
                   Địa chỉ bắt buộc
                 </div>
               </div>
