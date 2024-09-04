@@ -34,6 +34,7 @@ import { DropdownModule } from 'primeng/dropdown';
 import { DetailModalStudentComponent } from './student/detail-modal-student/detail-modal-student.component';
 import { StudentComponent } from './student/list-student/student.component';
 import { PaginatorModule } from 'primeng/paginator';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
 
 @NgModule({
   declarations: [
@@ -65,6 +66,7 @@ import { PaginatorModule } from 'primeng/paginator';
     FormsModule,
     DropdownModule,
     PaginatorModule,
+    ConfirmDialogModule,
   ],
   providers: [
     DialogService,

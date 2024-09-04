@@ -144,11 +144,18 @@ export class StudentComponent implements OnInit {
     });
   }
 
-  confirm(event: Event, studentData: any) {
+  confirmDelete(event: Event, studentData: any) {
     this.confirmationService.confirm({
-      target: event.target!,
+      target: event.target as EventTarget,
       message: `Bạn có chắc chắn muốn xóa ${studentData?.name}`,
-      icon: 'pi pi-exclamation-triangle',
+      header: 'Xác nhận xóa',
+      icon: 'pi pi-info-circle',
+      acceptButtonStyleClass: 'p-button-danger p-button-text',
+      rejectButtonStyleClass: 'p-button-text p-button-text',
+      acceptIcon: 'none',
+      rejectIcon: 'none',
+      acceptLabel: 'Đồng ý',
+      rejectLabel: 'Hủy',
       accept: () => {
         this.deleteStudent(studentData?.id);
       },

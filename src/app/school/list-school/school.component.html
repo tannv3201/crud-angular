@@ -42,7 +42,7 @@
               <p-button
                 icon="pi pi-times"
                 styleClass="p-button-rounded p-button-danger p-button-text"
-                (click)="confirm($event, school)"
+                (click)="confirmDelete($event, school)"
               ></p-button>
             </div>
           </td>
@@ -70,5 +70,5 @@
       ></p-paginator>
     </div>
   </div>
-  <p-confirmPopup></p-confirmPopup>
+  <p-confirmDialog />
 </div>
