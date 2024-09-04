@@ -35,6 +35,7 @@ import { DetailModalStudentComponent } from './student/detail-modal-student/deta
 import { StudentComponent } from './student/list-student/student.component';
 import { PaginatorModule } from 'primeng/paginator';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { StudentsComponent } from './students/students.component';
 
 @NgModule({
   declarations: [

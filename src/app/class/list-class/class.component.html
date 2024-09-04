@@ -58,7 +58,7 @@
         <tr>
           <th>Tên lớp</th>
           <th>Tên trường</th>
-          <th style="width: 15%">Thao tác</th>
+          <th style="width: 15%; text-align: center">Thao tác</th>
         </tr>
       </ng-template>
       <ng-template pTemplate="body" let-class>
@@ -66,22 +66,28 @@
           <td>{{ class?.name }}</td>
           <td>{{ class?.school?.name }}</td>
           <td>
-            <div class="d-flex gap-3">
-              <p-button
-                icon="pi pi-search"
-                styleClass="p-button-rounded p-button-success p-button-text"
-                (click)="openClassDetailModal(class, 'view')"
-              ></p-button>
-              <p-button
-                icon="pi pi-pencil"
-                (click)="openClassDetailModal(class, 'edit')"
-                styleClass="p-button-rounded p-button-info p-button-text"
-              ></p-button>
-              <p-button
-                icon="pi pi-times"
-                styleClass="p-button-rounded p-button-danger p-button-text"
-                (click)="confirmDelete($event, class)"
-              ></p-button>
+            <div class="row">
+              <div class="col-sm">
+                <p-button
+                  icon="pi pi-search"
+                  styleClass="p-button-rounded p-button-success p-button-text"
+                  (click)="openClassDetailModal(class, 'view')"
+                ></p-button>
+              </div>
+              <div class="col-sm">
+                <p-button
+                  icon="pi pi-pencil"
+                  (click)="openClassDetailModal(class, 'edit')"
+                  styleClass="p-button-rounded p-button-info p-button-text"
+                ></p-button>
+              </div>
+              <div class="col-sm">
+                <p-button
+                  icon="pi pi-times"
+                  styleClass="p-button-rounded p-button-danger p-button-text"
+                  (click)="confirmDelete($event, class)"
+                ></p-button>
+              </div>
             </div>
           </td>
         </tr>

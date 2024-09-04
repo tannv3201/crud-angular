@@ -61,7 +61,7 @@
         <tr>
           <th>Tên học sinh</th>
           <th>Tên lớp</th>
-          <th style="width: 15%">Thao tác</th>
+          <th style="width: 15%; text-align: center">Thao tác</th>
         </tr>
       </ng-template>
       <ng-template pTemplate="body" let-student>
@@ -69,22 +69,28 @@
           <td>{{ student?.name }}</td>
           <td>{{ student?.class_?.name }}</td>
           <td>
-            <div class="d-flex gap-3">
-              <p-button
-                icon="pi pi-search"
-                styleClass="p-button-rounded p-button-success p-button-text"
-                (click)="openStudentDetailModal(student, 'view')"
-              ></p-button>
-              <p-button
-                icon="pi pi-pencil"
-                (click)="openStudentDetailModal(student, 'edit')"
-                styleClass="p-button-rounded p-button-info p-button-text"
-              ></p-button>
-              <p-button
-                icon="pi pi-times"
-                styleClass="p-button-rounded p-button-danger p-button-text"
-                (click)="confirmDelete($event, student)"
-              ></p-button>
+            <div class="row">
+              <div class="col-sm">
+                <p-button
+                  icon="pi pi-search"
+                  styleClass="p-button-rounded p-button-success p-button-text"
+                  (click)="openStudentDetailModal(student, 'view')"
+                ></p-button>
+              </div>
+              <div class="col-sm">
+                <p-button
+                  icon="pi pi-pencil"
+                  (click)="openStudentDetailModal(student, 'edit')"
+                  styleClass="p-button-rounded p-button-info p-button-text"
+                ></p-button>
+              </div>
+              <div class="col-sm">
+                <p-button
+                  icon="pi pi-times"
+                  styleClass="p-button-rounded p-button-danger p-button-text"
+                  (click)="confirmDelete($event, student)"
+                ></p-button>
+              </div>
             </div>
           </td>
         </tr>
