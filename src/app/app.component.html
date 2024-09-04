@@ -31,11 +31,32 @@
     <div class="col-sm-8 d-flex align-middle gap-3">
       <h4><i class="fas fa-home" (click)="HomeClick()"></i></h4>
       <div class="d-flex align-middle gap-2">
-        <a href="#" routerLink="/school" class="btn text-light">Trường học</a>
+        <a
+          href="#"
+          routerLink="/school"
+          class="btn text-light"
+          [routerLinkActive]="['activeRouter']"
+          [routerLinkActiveOptions]="{ exact: true }"
+          >Trường học</a
+        >
 
-        <a href="#" routerLink="/class" class="btn text-light">Lớp học</a>
+        <a
+          href="#"
+          routerLink="/class"
+          class="btn text-light"
+          [routerLinkActive]="['activeRouter']"
+          [routerLinkActiveOptions]="{ exact: true }"
+          >Lớp học</a
+        >
 
-        <a href="#" routerLink="/school" class="btn text-light">Học sinh</a>
+        <a
+          href="#"
+          routerLink="/student"
+          class="btn text-light"
+          [routerLinkActive]="['activeRouter']"
+          [routerLinkActiveOptions]="{ exact: true }"
+          >Học sinh</a
+        >
       </div>
     </div>
     <div class="col-sm-4">

@@ -7,55 +7,12 @@ import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { DetailModalSchoolComponent } from '../detail-modal-school/detail-modal-school.component';
 import { ConfirmationService, MessageService } from 'primeng/api';
 
-@Component({
-  selector: 'ng-modal-confirm',
-  template: `
-    <div class="modal-header d-flex justify-content-between">
-      <h5 class="modal-title" id="modal-title">Xác nhận xóa</h5>
-      <button
-        type="button"
-        class="btn close"
-        aria-label="Close button"
-        aria-describedby="modal-title"
-        (click)="modal.dismiss('Cross click')"
-      >
-        <span aria-hidden="true">&times;</span>
-      </button>
-    </div>
-    <div class="modal-body">
-      <p>
-        Bạn có chắc chắn muốn xóa
-        <span class="fw-semibold text-danger">{{ school?.name }}</span
-        >?
-      </p>
-    </div>
-    <div class="modal-footer">
-      <button
-        type="button"
-        class="btn btn-outline-secondary"
-        (click)="modal.dismiss('cancel click')"
-      >
-        CANCEL
-      </button>
-      <button
-        type="button"
-        ngbAutofocus
-        class="btn btn-success"
-        (click)="modal.close(school?.id)"
-      >
-        OK
-      </button>
-    </div>
-  `,
-})
-export class NgModalConfirm {
-  @Input() school: any; // Nhận prop
-  constructor(public modal: NgbActiveModal) {}
+interface PageEvent {
+  first: number;
+  rows: number;
+  page: number;
+  pageCount: number;
 }
-
-const MODALS: { [name: string]: Type<any> } = {
-  deleteModal: NgModalConfirm,
-};
 
 @Component({
   selector: 'app-school',
@@ -67,6 +24,12 @@ export class SchoolComponent implements OnInit {
   detailModalSchoolComponent!: DetailModalSchoolComponent;
   closeResult = '';
   schoolList: any = [];
+  totalRecords: number = 0;
+  totalPages: number = 0;
+  pageSize: number = 5;
+  currentPage: number = 0;
+  first: number = 0;
+
   constructor(
     private router: Router,
     private confirmationService: ConfirmationService,
@@ -79,8 +42,26 @@ export class SchoolComponent implements OnInit {
   ref?: DynamicDialogRef;
 
   ngOnInit(): void {
-    this.getAllSchool();
+    this.getSchools(this.currentPage + 1, this.pageSize);
   }
+
+  onPageChange(event: PageEvent) {
+    this.first = event.first;
+    this.pageSize = event.rows;
+    this.currentPage = event.page;
+    this.getSchools(event.page + 1, event.rows);
+  }
+
+  changeRowsPerPage(event: any) {
+    this.pageSize = event;
+    this.getSchools(this.currentPage, event);
+  }
+
+  options = [
+    { label: 5, value: 5 },
+    { label: 10, value: 10 },
+    { label: 20, value: 20 },
+  ];
 
   async getAllSchool() {
     this.httpProvider.getAllSchool().subscribe(
@@ -99,8 +80,25 @@ export class SchoolComponent implements OnInit {
     );
   }
 
-  addSchool() {
-    this.router.navigate(['addSchool']);
+  async getSchools(page: number, pageSize: number) {
+    this.httpProvider.getSchools({ page: page, pageSize: pageSize }).subscribe(
+      (data: any) => {
+        this.schoolList = data.results;
+        this.totalRecords = data.totalRecords;
+        this.pageSize = data.pageSize;
+        this.currentPage = data.currentPage;
+        this.totalPages = data.totalPages;
+      },
+      (error: any) => {
+        if (error) {
+          if (error.status == 404) {
+            if (error.error && error.error.message) {
+              this.schoolList = [];
+            }
+          }
+        }
+      }
+    );
   }
 
   openSchoolDetailModal(school: any, mode: any) {
@@ -129,39 +127,21 @@ export class SchoolComponent implements OnInit {
         if (mode === 'add') {
           this.messageService.add({
             severity: 'success',
-            summary: 'Thêm mới',
+            summary: 'Thêm mới trường',
             detail: 'Thêm mới thành công',
           });
         } else if (mode === 'edit') {
           this.messageService.add({
             severity: 'success',
-            summary: 'Cập nhật',
+            summary: 'Cập nhật trường',
             detail: 'Cập nhật thành công',
           });
         }
 
-        this.getAllSchool();
+        // this.getAllSchool();
+        this.getSchools(this.currentPage, this.pageSize);
       }
     });
-  }
-
-  deleteSchoolConfirmation(school: any) {
-    const modalRef = this.modalService.open(NgModalConfirm);
-    modalRef.componentInstance.school = school; // Truyền dữ liệu vào modal
-
-    modalRef.result.then(
-      (result: any) => {
-        if (result) {
-          this.deleteSchool(result);
-        }
-      },
-      (reason: any) => {
-        console.log(
-          '🚀 ~ SchoolComponent ~ deleteSchoolConfirmation ~ reason:',
-          reason
-        );
-      }
-    );
   }
 
   confirm(event: Event, school: any) {
@@ -182,21 +162,13 @@ export class SchoolComponent implements OnInit {
     });
   }
 
-  show() {
-    this.messageService.add({
-      severity: 'success',
-      summary: 'Success',
-      detail: 'Message Content',
-    });
-  }
-
   deleteSchool(schoolId: any) {
     this.httpProvider.deleteSchool(schoolId).subscribe(
       (data: any) => {
-        this.getAllSchool();
+        this.getSchools(this.currentPage, this.pageSize);
         this.messageService.add({
           severity: 'info',
-          summary: 'Thành công',
+          summary: 'Xóa trường',
           detail: 'Bạn đã xóa thành công',
         });
       },

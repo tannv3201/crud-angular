@@ -1,0 +1,81 @@
+<form
+  [formGroup]="studentForm"
+  class="d-block"
+  style="height: 100% !important; position: relative"
+>
+  <div class="d-flex flex-column gap-3">
+    <div class="d-flex flex-column gap-2">
+      <label htmlFor="name" class="!text-red-500">Tên học sinh</label>
+      <input
+        pInputText
+        id="name"
+        aria-describedby="name-help"
+        formControlName="name"
+        [readOnly]="mode === 'view'"
+        [ngClass]="{
+          'is-invalid':
+            studentForm.get('name')?.invalid && studentForm.get('name')?.touched
+        }"
+      />
+      <div
+        *ngIf="
+          studentForm.get('name')?.invalid && studentForm.get('name')?.touched
+        "
+        class="invalid-feedback"
+      >
+        Tên học sinh là bắt buộc.
+      </div>
+    </div>
+    <div class="d-flex flex-column gap-2">
+      <label htmlFor="address" class="!text-red-500">Trường</label>
+      <p-dropdown
+        [options]="classList"
+        optionLabel="name"
+        optionValue="id"
+        [filter]="true"
+        filterBy="name"
+        [showClear]="mode === 'view' ? false : true"
+        placeholder="Chọn lớp"
+        formControlName="classId"
+        (onChange)="handleChangeClass($event)"
+        [readonly]="mode === 'view'"
+        [ngClass]="{
+          'is-invalid':
+            studentForm.get('classId')?.invalid &&
+            studentForm.get('classId')?.touched
+        }"
+      >
+        <ng-template pTemplate="selectedItem" let-selectedOption>
+          <div class="flex align-items-center gap-2">
+            <div>{{ selectedOption.name }}</div>
+          </div>
+        </ng-template>
+        <ng-template let-class pTemplate="item">
+          <div class="flex align-items-center gap-2">
+            <div>{{ class.name }}</div>
+          </div>
+        </ng-template>
+      </p-dropdown>
+      <div
+        *ngIf="
+          studentForm.get('classId')?.invalid &&
+          studentForm.get('classId')?.touched
+        "
+        class="invalid-feedback"
+      >
+        Lớp học là bắt buộc.
+      </div>
+    </div>
+  </div>
+
+  <div class="position-absolute bottom-0 end-0" *ngIf="mode !== 'view'">
+    <div class="d-flex gap-3 justify-content-end">
+      <p-button
+        label="Hủy"
+        styleClass="p-button-raised p-button-text p-button-secondary"
+        (click)="ref.close()"
+      ></p-button>
+      <p-button label="Lưu" (click)="submit()"></p-button>
+    </div>
+  </div>
+</form>

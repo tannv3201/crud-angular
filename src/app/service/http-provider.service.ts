@@ -14,17 +14,21 @@ var httpLink = {
 
   createSchool: apiUrl + '/school/create',
   getAllSchool: apiUrl + '/school/all',
+  getSchools: apiUrl + '/school/list',
   getDetailSchool: apiUrl + '/school',
   updateSchool: apiUrl + '/school/update',
   deleteSchool: apiUrl + '/school/delete',
 
   createClass: apiUrl + '/class/create',
   getAllClass: apiUrl + '/class/all',
+  getClasses: apiUrl + '/class/list',
   getDetailClass: apiUrl + '/class',
   updateClass: apiUrl + '/class/update',
   deleteClass: apiUrl + '/class/delete',
 
+  createStudent: apiUrl + '/student/create',
   getAllStudent: apiUrl + '/student/all',
+  getStudents: apiUrl + '/student/list',
   getDetailStudent: apiUrl + '/student',
   updateStudent: apiUrl + '/student/update',
   deleteStudent: apiUrl + '/student/delete',
@@ -41,6 +45,10 @@ export class HttpProviderService {
   }
   public getAllSchool(params?: any): Observable<any> {
     return this.webApiService.get(httpLink.getAllSchool, params);
+  }
+
+  public getSchools(params?: any): Observable<any> {
+    return this.webApiService.get(httpLink.getSchools, params);
   }
 
   public getDetailSchool(id: string, params?: any): Observable<any> {
@@ -64,6 +72,10 @@ export class HttpProviderService {
     return this.webApiService.get(httpLink.getAllClass, params);
   }
 
+  public getClasses(params?: any): Observable<any> {
+    return this.webApiService.get(httpLink.getClasses, params);
+  }
+
   public getDetailClass(id: string, params: any): Observable<any> {
     return this.webApiService.get(`${httpLink.getDetailClass}/${id}`, params);
   }
@@ -73,13 +85,20 @@ export class HttpProviderService {
   }
 
   public deleteClass(id: string): Observable<any> {
-    return this.webApiService.patch(`${httpLink.deleteClass}/${id}`);
+    return this.webApiService.delete(`${httpLink.deleteClass}/${id}`);
   }
 
   //   ----------------------------
 
+  public createStudent(data?: any): Observable<any> {
+    return this.webApiService.post(httpLink.createStudent, data);
+  }
   public getAllStudent(params: any): Observable<any> {
-    return this.webApiService.get(httpLink.getAllEmployee, params);
+    return this.webApiService.get(httpLink.getAllStudent, params);
+  }
+
+  public getStudents(params: any): Observable<any> {
+    return this.webApiService.get(httpLink.getStudents, params);
   }
 
   public getDetailStudent(id: string, params: any): Observable<any> {
@@ -91,6 +110,6 @@ export class HttpProviderService {
   }
 
   public deleteStudent(id: string): Observable<any> {
-    return this.webApiService.patch(`${httpLink.deleteSchool}/${id}`);
+    return this.webApiService.delete(`${httpLink.deleteStudent}/${id}`);
   }
 }

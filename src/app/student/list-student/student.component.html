@@ -1,48 +1,48 @@
 <div style="padding: 100px 40px 0 40px">
   <div class="card">
     <p-table
-      [value]="schoolList"
+      [value]="studentList"
       styleClass="p-datatable-gridlines"
       [tableStyle]="{ 'min-width': '50rem' }"
     >
       <ng-template pTemplate="caption">
         <div class="d-flex justify-content-between align-items-center">
-          <p style="margin-bottom: 0">Trường học</p>
+          <p style="margin-bottom: 0">Học sinh</p>
           <p-button
-            label="Thêm trường học"
+            label="Thêm học sinh"
             icon="pi pi-plus"
             size="small"
-            (click)="openSchoolDetailModal(null, 'add')"
+            (click)="openStudentDetailModal(null, 'add')"
           ></p-button>
         </div>
       </ng-template>
       <ng-template pTemplate="header">
         <tr>
-          <th>Tên trường</th>
-          <th>Địa chỉ</th>
+          <th>Tên học sinh</th>
+          <th>Tên lớp</th>
           <th>Thao tác</th>
         </tr>
       </ng-template>
-      <ng-template pTemplate="body" let-school>
+      <ng-template pTemplate="body" let-student>
         <tr>
-          <td>{{ school?.name }}</td>
-          <td>{{ school?.address }}</td>
+          <td>{{ student?.name }}</td>
+          <td>{{ student?.class_?.name }}</td>
           <td>
             <div class="d-flex gap-3">
               <p-button
                 icon="pi pi-search"
                 styleClass="p-button-rounded p-button-success p-button-text"
-                (click)="openSchoolDetailModal(school, 'view')"
+                (click)="openStudentDetailModal(student, 'view')"
               ></p-button>
               <p-button
                 icon="pi pi-pencil"
-                (click)="openSchoolDetailModal(school, 'edit')"
+                (click)="openStudentDetailModal(student, 'edit')"
                 styleClass="p-button-rounded p-button-info p-button-text"
               ></p-button>
               <p-button
                 icon="pi pi-times"
                 styleClass="p-button-rounded p-button-danger p-button-text"
-                (click)="confirm($event, school)"
+                (click)="confirm($event, student)"
               ></p-button>
             </div>
           </td>
@@ -69,6 +69,6 @@
         [showFirstLastIcon]="false"
       ></p-paginator>
     </div>
+    <p-confirmPopup></p-confirmPopup>
   </div>
-  <p-confirmPopup></p-confirmPopup>
 </div>

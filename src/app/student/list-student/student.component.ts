@@ -5,7 +5,7 @@ import { ToastrService } from 'ngx-toastr';
 import { HttpProviderService } from '../../service/http-provider.service';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { ConfirmationService, MessageService } from 'primeng/api';
-import { DetailModalClassComponent } from '../detail-modal-class/detail-modal-class.component';
+import { DetailModalStudentComponent } from '../detail-modal-student/detail-modal-student.component';
 
 interface PageEvent {
   first: number;
@@ -15,21 +15,20 @@ interface PageEvent {
 }
 
 @Component({
-  selector: 'app-class',
-  templateUrl: './class.component.html',
-  styleUrls: ['./class.component.scss'],
+  selector: 'app-student',
+  templateUrl: './student.component.html',
+  styleUrls: ['./student.component.scss'],
 })
-export class ClassComponent implements OnInit {
-  @ViewChild(DetailModalClassComponent)
-  detailModalClassComponent!: DetailModalClassComponent;
+export class StudentComponent implements OnInit {
+  @ViewChild(DetailModalStudentComponent)
+  detailModalClassComponent!: DetailModalStudentComponent;
   closeResult = '';
-  classList: any = [];
+  studentList: any = [];
   totalRecords: number = 0;
   totalPages: number = 0;
   pageSize: number = 5;
   currentPage: number = 0;
   first: number = 0;
-
   constructor(
     private router: Router,
     private confirmationService: ConfirmationService,
@@ -42,19 +41,19 @@ export class ClassComponent implements OnInit {
   ref?: DynamicDialogRef;
 
   ngOnInit(): void {
-    this.getClasses(this.currentPage + 1, this.pageSize);
+    this.getStudents(this.currentPage + 1, this.pageSize);
   }
 
   onPageChange(event: PageEvent) {
     this.first = event.first;
     this.pageSize = event.rows;
     this.currentPage = event.page;
-    this.getClasses(event.page + 1, event.rows);
+    this.getStudents(event.page + 1, event.rows);
   }
 
   changeRowsPerPage(event: any) {
     this.pageSize = event;
-    this.getClasses(this.currentPage, event);
+    this.getStudents(this.currentPage, event);
   }
 
   options = [
@@ -63,12 +62,29 @@ export class ClassComponent implements OnInit {
     { label: 20, value: 20 },
   ];
 
-  async getClasses(page: number, pageSize: number) {
+  async getAllStudent() {
+    this.httpProvider.getAllStudent({ has_class: true }).subscribe(
+      (data: any) => {
+        this.studentList = data;
+      },
+      (error: any) => {
+        if (error) {
+          if (error.status == 404) {
+            if (error.error && error.error.message) {
+              this.studentList = [];
+            }
+          }
+        }
+      }
+    );
+  }
+
+  async getStudents(page: number, pageSize: number) {
     this.httpProvider
-      .getClasses({ has_school: true, page: page, pageSize: pageSize })
+      .getStudents({ has_class: true, page: page, pageSize: pageSize })
       .subscribe(
         (data: any) => {
-          this.classList = data?.results;
+          this.studentList = data?.results;
           this.totalRecords = data.totalRecords;
           this.pageSize = data.pageSize;
           this.currentPage = data.currentPage;
@@ -78,7 +94,7 @@ export class ClassComponent implements OnInit {
           if (error) {
             if (error.status == 404) {
               if (error.error && error.error.message) {
-                this.classList = [];
+                this.studentList = [];
               }
             }
           }
@@ -86,16 +102,16 @@ export class ClassComponent implements OnInit {
       );
   }
 
-  openClassDetailModal(classData: any, mode: any) {
+  openStudentDetailModal(studentData: any, mode: any) {
     const _title =
       mode == 'view'
-        ? 'Chi tiết lớp học'
+        ? 'Chi tiết học sinh'
         : mode == 'edit'
-        ? 'Cập nhật lớp học'
+        ? 'Cập nhật học sinh'
         : mode == 'add'
-        ? 'Thêm lớp học'
+        ? 'Thêm học sinh'
         : '';
-    this.ref = this.dialogService.open(DetailModalClassComponent, {
+    this.ref = this.dialogService.open(DetailModalStudentComponent, {
       header: _title,
       width: '60%',
       height: '60%',
@@ -103,7 +119,7 @@ export class ClassComponent implements OnInit {
       baseZIndex: 10000,
       maximizable: true,
       data: {
-        class: classData,
+        student: studentData,
         mode: mode,
       },
     });
@@ -112,29 +128,29 @@ export class ClassComponent implements OnInit {
         if (mode === 'add') {
           this.messageService.add({
             severity: 'success',
-            summary: 'Thêm mới lớp',
+            summary: 'Thêm mới học sinh',
             detail: 'Thêm mới thành công',
           });
         } else if (mode === 'edit') {
           this.messageService.add({
             severity: 'success',
-            summary: 'Cập nhật lớp',
+            summary: 'Cập nhật học sinh',
             detail: 'Cập nhật thành công',
           });
         }
 
-        this.getClasses(this.currentPage, this.pageSize);
+        this.getStudents(this.currentPage, this.pageSize);
       }
     });
   }
 
-  confirm(event: Event, classData: any) {
+  confirm(event: Event, studentData: any) {
     this.confirmationService.confirm({
       target: event.target!,
-      message: `Bạn có chắc chắn muốn xóa ${classData?.name}`,
+      message: `Bạn có chắc chắn muốn xóa ${studentData?.name}`,
       icon: 'pi pi-exclamation-triangle',
       accept: () => {
-        this.deleteClass(classData?.id);
+        this.deleteStudent(studentData?.id);
       },
       reject: () => {
         // this.messageService.add({
@@ -146,13 +162,21 @@ export class ClassComponent implements OnInit {
     });
   }
 
-  deleteClass(classId: any) {
-    this.httpProvider.deleteClass(classId).subscribe(
+  show() {
+    this.messageService.add({
+      severity: 'success',
+      summary: 'Success',
+      detail: 'Message Content',
+    });
+  }
+
+  deleteStudent(studentId: any) {
+    this.httpProvider.deleteStudent(studentId).subscribe(
       (data: any) => {
-        this.getClasses(this.currentPage, this.pageSize);
+        this.getStudents(this.currentPage, this.pageSize);
         this.messageService.add({
           severity: 'info',
-          summary: 'Xóa lớp',
+          summary: 'Xóa học sinh',
           detail: 'Bạn đã xóa thành công',
         });
       },
@@ -160,7 +184,7 @@ export class ClassComponent implements OnInit {
         if (error) {
           if (error.status == 404) {
             if (error.error && error.error.message) {
-              this.classList = [];
+              this.studentList = [];
             }
           }
         }

@@ -199,3 +199,15 @@ button.toast-close-button {
         width: 25em;
     }
 }
+
+.p-dropdown {
+    width: 100% !important;
+}
+
+.p-overlay.p-component.ng-star-inserted {
+    min-width: auto !important;
+}
+
+.activeRouter {
+    text-decoration: underline;
+}

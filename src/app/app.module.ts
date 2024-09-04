@@ -13,11 +13,7 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ToastrModule } from 'ngx-toastr';
 import { SchoolComponent } from './school/list-school/school.component';
-import { DetailSchoolComponent } from './school/detail-school/detail-school.component';
-import { AddSchoolComponent } from './school/add-school/add-school.component';
-import { EditSchoolComponent } from './school/edit-school/edit-school.component';
-import { ClassComponent } from './class/list-class/class.component';
-import { DetailClassComponent } from './class/detail-class/detail-class.component';
+
 import { ButtonModule } from 'primeng/button';
 import { TableModule } from 'primeng/table';
 import { DetailModalSchoolComponent } from './school/detail-modal-school/detail-modal-school.component';
@@ -32,18 +28,22 @@ import { ConfirmationService, MessageService } from 'primeng/api';
 import { ToastModule } from 'primeng/toast';
 import { ConfirmPopupModule } from 'primeng/confirmpopup';
 import { CommonModule } from '@angular/common';
+import { ClassComponent } from './class/list-class/class.component';
+import { DetailModalClassComponent } from './class/detail-modal-class/detail-modal-class.component';
+import { DropdownModule } from 'primeng/dropdown';
+import { DetailModalStudentComponent } from './student/detail-modal-student/detail-modal-student.component';
+import { StudentComponent } from './student/list-student/student.component';
+import { PaginatorModule } from 'primeng/paginator';
 
 @NgModule({
   declarations: [
     AppComponent,
     SchoolComponent,
-    DetailSchoolComponent,
-    AddSchoolComponent,
-    EditSchoolComponent,
+    DetailModalSchoolComponent,
     ClassComponent,
-    DetailClassComponent,
-    DetailModalSchoolComponent,
-    DetailModalSchoolComponent,
+    DetailModalClassComponent,
+    DetailModalStudentComponent,
+    StudentComponent,
   ],
   imports: [
     BrowserModule,
@@ -61,6 +61,10 @@ import { CommonModule } from '@angular/common';
     ReactiveFormsModule,
     ToastModule,
     ConfirmPopupModule,
+    CommonModule,
+    FormsModule,
+    DropdownModule,
+    PaginatorModule,
   ],
   providers: [
     DialogService,

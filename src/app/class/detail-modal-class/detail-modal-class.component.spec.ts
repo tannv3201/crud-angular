@@ -1,19 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { DetailModalClassComponent } from './detail-modal-class.component';
 
-import { AddEmployeeComponent } from './add-school.component';
-
-describe('AddEmployeeComponent', () => {
-  let component: AddEmployeeComponent;
-  let fixture: ComponentFixture<AddEmployeeComponent>;
+describe('DetailModalClassComponent', () => {
+  let component: DetailModalClassComponent;
+  let fixture: ComponentFixture<DetailModalClassComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [AddEmployeeComponent],
+      declarations: [DetailModalClassComponent],
     }).compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(AddEmployeeComponent);
+    fixture = TestBed.createComponent(DetailModalClassComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
