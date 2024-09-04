@@ -1,7 +1,6 @@
-import { Component, Input, OnInit, Type, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
-import { NgbModal, NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
-import { ToastrService } from 'ngx-toastr';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { HttpProviderService } from '../../service/http-provider.service';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { ConfirmationService, MessageService } from 'primeng/api';
@@ -75,13 +74,11 @@ export class ClassComponent implements OnInit {
           this.totalPages = data.totalPages;
         },
         (error: any) => {
-          if (error) {
-            if (error.status == 404) {
-              if (error.error && error.error.message) {
-                this.classList = [];
-              }
-            }
-          }
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Lỗi',
+            detail: 'Có lỗi xảy ra khi GET danh sách lớp',
+          });
         }
       );
   }
@@ -136,13 +133,7 @@ export class ClassComponent implements OnInit {
       accept: () => {
         this.deleteClass(classData?.id);
       },
-      reject: () => {
-        // this.messageService.add({
-        //   severity: 'error',
-        //   summary: 'Rejected',
-        //   detail: 'You have rejected',
-        // });
-      },
+      reject: () => {},
     });
   }
 
@@ -157,13 +148,11 @@ export class ClassComponent implements OnInit {
         });
       },
       (error: any) => {
-        if (error) {
-          if (error.status == 404) {
-            if (error.error && error.error.message) {
-              this.classList = [];
-            }
-          }
-        }
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Lỗi',
+          detail: 'Có lỗi xảy ra khi xóa lớp',
+        });
       }
     );
   }

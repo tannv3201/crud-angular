@@ -69,11 +69,11 @@ export class StudentComponent implements OnInit {
       },
       (error: any) => {
         if (error) {
-          if (error.status == 404) {
-            if (error.error && error.error.message) {
-              this.studentList = [];
-            }
-          }
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Lỗi',
+            detail: 'Có lỗi xảy ra khi GET danh sách học sinh',
+          });
         }
       }
     );
@@ -92,11 +92,11 @@ export class StudentComponent implements OnInit {
         },
         (error: any) => {
           if (error) {
-            if (error.status == 404) {
-              if (error.error && error.error.message) {
-                this.studentList = [];
-              }
-            }
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Lỗi',
+              detail: 'Có lỗi xảy ra khi GET danh sách học sinh',
+            });
           }
         }
       );
@@ -152,21 +152,7 @@ export class StudentComponent implements OnInit {
       accept: () => {
         this.deleteStudent(studentData?.id);
       },
-      reject: () => {
-        // this.messageService.add({
-        //   severity: 'error',
-        //   summary: 'Rejected',
-        //   detail: 'You have rejected',
-        // });
-      },
-    });
-  }
-
-  show() {
-    this.messageService.add({
-      severity: 'success',
-      summary: 'Success',
-      detail: 'Message Content',
+      reject: () => {},
     });
   }
 
@@ -181,13 +167,12 @@ export class StudentComponent implements OnInit {
         });
       },
       (error: any) => {
-        if (error) {
-          if (error.status == 404) {
-            if (error.error && error.error.message) {
-              this.studentList = [];
-            }
-          }
-        }
+        console.log('🚀 ~ StudentComponent ~ deleteStudent ~ error:', error);
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Lỗi',
+          detail: 'Có lỗi xảy ra khi xóa học sinh',
+        });
       }
     );
   }

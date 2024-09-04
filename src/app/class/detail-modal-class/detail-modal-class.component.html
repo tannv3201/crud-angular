@@ -37,8 +37,9 @@
         formControlName="schoolId"
         (onChange)="handleChangeSchool($event)"
         [readonly]="mode === 'view'"
+        class=""
         [ngClass]="{
-          'is-invalid':
+          'is-invalid ng-dirty ng-invalid':
             classForm.get('schoolId')?.invalid &&
             classForm.get('schoolId')?.touched
         }"

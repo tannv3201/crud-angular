@@ -74,9 +74,14 @@ export class DetailModalClassComponent implements OnInit {
           (error: any) => {
             if (error) {
               console.log(
-                '🚀 ~ ViewEmployeeComponent ~ getDetailSchool ~ error:',
+                '🚀 ~ DetailModalClassComponent ~ submit ~ error:',
                 error
               );
+              this.messageService.add({
+                severity: 'error',
+                summary: 'Lỗi',
+                detail: 'Có lỗi xảy ra khi thêm mới lớp học',
+              });
             }
           }
         );
@@ -92,9 +97,14 @@ export class DetailModalClassComponent implements OnInit {
             (error: any) => {
               if (error) {
                 console.log(
-                  '🚀 ~ ViewEmployeeComponent ~ getDetailSchool ~ error:',
+                  '🚀 ~ DetailModalClassComponent ~ submit ~ error:',
                   error
                 );
+                this.messageService.add({
+                  severity: 'error',
+                  summary: 'Lỗi',
+                  detail: 'Có lỗi xảy ra khi cập nhật lớp học',
+                });
               }
             }
           );
@@ -102,7 +112,11 @@ export class DetailModalClassComponent implements OnInit {
       // Pass form value when closing modal
     } else {
       // Handle invalid form case
-      console.log('Form is invalid');
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Thiếu dữ liệu',
+        detail: 'Vui lòng nhập đầy đủ thông tin',
+      });
       this.classForm.markAllAsTouched(); // Mark all fields as touched to show validation errors
     }
   }

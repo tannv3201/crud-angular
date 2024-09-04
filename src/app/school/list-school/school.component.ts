@@ -1,7 +1,6 @@
 import { Component, Input, OnInit, Type, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
-import { NgbModal, NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
-import { ToastrService } from 'ngx-toastr';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { HttpProviderService } from '../../service/http-provider.service';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { DetailModalSchoolComponent } from '../detail-modal-school/detail-modal-school.component';
@@ -91,11 +90,11 @@ export class SchoolComponent implements OnInit {
       },
       (error: any) => {
         if (error) {
-          if (error.status == 404) {
-            if (error.error && error.error.message) {
-              this.schoolList = [];
-            }
-          }
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Lỗi',
+            detail: 'Có lỗi xảy ra khi GET danh sách trường học',
+          });
         }
       }
     );
@@ -138,7 +137,6 @@ export class SchoolComponent implements OnInit {
           });
         }
 
-        // this.getAllSchool();
         this.getSchools(this.currentPage, this.pageSize);
       }
     });
@@ -152,13 +150,7 @@ export class SchoolComponent implements OnInit {
       accept: () => {
         this.deleteSchool(school?.id);
       },
-      reject: () => {
-        // this.messageService.add({
-        //   severity: 'error',
-        //   summary: 'Rejected',
-        //   detail: 'You have rejected',
-        // });
-      },
+      reject: () => {},
     });
   }
 
@@ -173,13 +165,11 @@ export class SchoolComponent implements OnInit {
         });
       },
       (error: any) => {
-        if (error) {
-          if (error.status == 404) {
-            if (error.error && error.error.message) {
-              this.schoolList = [];
-            }
-          }
-        }
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Lỗi',
+          detail: 'Có lỗi xảy ra khi xóa trường học',
+        });
       }
     );
   }

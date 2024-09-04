@@ -40,7 +40,7 @@
         (onChange)="handleChangeClass($event)"
         [readonly]="mode === 'view'"
         [ngClass]="{
-          'is-invalid':
+          'is-invalid ng-dirty ng-invalid':
             studentForm.get('classId')?.invalid &&
             studentForm.get('classId')?.touched
         }"

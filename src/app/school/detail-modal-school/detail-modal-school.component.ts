@@ -23,8 +23,8 @@ export class DetailModalSchoolComponent implements OnInit {
     private messageService: MessageService
   ) {
     this.schoolForm = this.fb.group({
-      name: ['', Validators.required], // Required validation
-      address: ['', Validators.required], // Required validation
+      name: ['', Validators.required],
+      address: ['', Validators.required],
       id: [''],
     });
   }
@@ -47,9 +47,15 @@ export class DetailModalSchoolComponent implements OnInit {
           (error: any) => {
             if (error) {
               console.log(
-                '🚀 ~ ViewEmployeeComponent ~ getDetailSchool ~ error:',
+                '🚀 ~ DetailModalSchoolComponent ~ submit ~ error:',
                 error
               );
+
+              this.messageService.add({
+                severity: 'error',
+                summary: 'Lỗi',
+                detail: 'Có lỗi xảy ra khi thêm mới trường học',
+              });
             }
           }
         );
@@ -65,9 +71,14 @@ export class DetailModalSchoolComponent implements OnInit {
             (error: any) => {
               if (error) {
                 console.log(
-                  '🚀 ~ ViewEmployeeComponent ~ getDetailSchool ~ error:',
+                  '🚀 ~ DetailModalSchoolComponent ~ submit ~ error:',
                   error
                 );
+                this.messageService.add({
+                  severity: 'error',
+                  summary: 'Lỗi',
+                  detail: 'Có lỗi xảy ra khi cập nhật trường học',
+                });
               }
             }
           );
@@ -75,7 +86,11 @@ export class DetailModalSchoolComponent implements OnInit {
       // Pass form value when closing modal
     } else {
       // Handle invalid form case
-      console.log('Form is invalid');
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Thiếu dữ liệu',
+        detail: 'Vui lòng nhập đầy đủ thông tin',
+      });
       this.schoolForm.markAllAsTouched(); // Mark all fields as touched to show validation errors
     }
   }
