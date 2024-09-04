@@ -12,6 +12,7 @@
         aria-describedby="name-help"
         formControlName="name"
         [readOnly]="mode === 'view'"
+        placeholder="Nhập tên lớp học"
         [ngClass]="{
           'is-invalid':
             classForm.get('name')?.invalid && classForm.get('name')?.touched
