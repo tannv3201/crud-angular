@@ -31,24 +31,7 @@ export class DetailModalStudentComponent implements OnInit {
   ngOnInit() {
     this.studentForm.patchValue(this.config.data?.student);
     this.mode = this.config.data?.mode;
-    this.getAllClass();
-  }
-
-  async getAllClass() {
-    this.httpProvider.getAllClass().subscribe(
-      (data: any) => {
-        this.classList = data;
-      },
-      (error: any) => {
-        if (error) {
-          if (error.status == 404) {
-            if (error.error && error.error.message) {
-              this.classList = [];
-            }
-          }
-        }
-      }
-    );
+    this.classList = this.config.data?.classList;
   }
 
   handleChangeClass(event: any) {

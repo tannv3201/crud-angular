@@ -5,6 +5,7 @@ import { HttpProviderService } from '../../service/http-provider.service';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { DetailModalClassComponent } from '../detail-modal-class/detail-modal-class.component';
+import { debounceTime, Subject, Subscription } from 'rxjs';
 
 interface PageEvent {
   first: number;
@@ -23,11 +24,16 @@ export class ClassComponent implements OnInit {
   detailModalClassComponent!: DetailModalClassComponent;
   closeResult = '';
   classList: any = [];
+  schoolList: any = [];
   totalRecords: number = 0;
   totalPages: number = 0;
   pageSize: number = 5;
   currentPage: number = 0;
   first: number = 0;
+  filterName: string = '';
+  filterSchool: string = '';
+  private filterSubject: Subject<void> = new Subject<void>();
+  private filterSubscription: Subscription = new Subscription();
 
   constructor(
     private router: Router,
@@ -42,6 +48,28 @@ export class ClassComponent implements OnInit {
 
   ngOnInit(): void {
     this.getClasses(this.currentPage + 1, this.pageSize);
+    this.getAllSchool();
+
+    this.filterSubscription = this.filterSubject
+      .pipe(debounceTime(300))
+      .subscribe(() => {
+        this.getClasses(
+          this.currentPage,
+          this.pageSize,
+          this.filterName,
+          this.filterSchool
+        );
+      });
+  }
+
+  onChangeFilterName(event: any) {
+    this.filterName = event;
+    this.filterSubject.next();
+  }
+
+  onChangeFilterSchool(event: any) {
+    this.filterSchool = event.value;
+    this.filterSubject.next();
   }
 
   onPageChange(event: PageEvent) {
@@ -62,9 +90,20 @@ export class ClassComponent implements OnInit {
     { label: 20, value: 20 },
   ];
 
-  async getClasses(page: number, pageSize: number) {
+  async getClasses(
+    page: number,
+    pageSize: number,
+    search?: string,
+    schoolId?: string
+  ) {
     this.httpProvider
-      .getClasses({ has_school: true, page: page, pageSize: pageSize })
+      .getClasses({
+        has_school: true,
+        page: page,
+        pageSize: pageSize,
+        ...(search && { search: search }),
+        ...(schoolId && { schoolId: schoolId }),
+      })
       .subscribe(
         (data: any) => {
           this.classList = data?.results;
@@ -81,6 +120,23 @@ export class ClassComponent implements OnInit {
           });
         }
       );
+  }
+
+  async getAllSchool() {
+    this.httpProvider.getAllSchool().subscribe(
+      (data: any) => {
+        this.schoolList = data;
+      },
+      (error: any) => {
+        if (error) {
+          if (error.status == 404) {
+            if (error.error && error.error.message) {
+              this.schoolList = [];
+            }
+          }
+        }
+      }
+    );
   }
 
   openClassDetailModal(classData: any, mode: any) {
@@ -102,6 +158,7 @@ export class ClassComponent implements OnInit {
       data: {
         class: classData,
         mode: mode,
+        schoolList: this.schoolList,
       },
     });
     this.ref.onClose.subscribe((res) => {
@@ -165,6 +222,9 @@ export class ClassComponent implements OnInit {
   }
 
   ngOnDestroy() {
+    if (this.filterSubscription) {
+      this.filterSubscription.unsubscribe();
+    }
     if (this.ref) {
       this.ref.close();
     }

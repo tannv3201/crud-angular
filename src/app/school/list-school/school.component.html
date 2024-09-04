@@ -1,26 +1,41 @@
 <div style="padding: 100px 40px 0 40px">
   <div class="card">
+    <div class="p-3">
+      <div class="d-flex justify-content-between align-items-center">
+        <p style="margin-bottom: 0" style="font-weight: 500; font-size: 20px">
+          Trường học
+        </p>
+        <p-button
+          label="Thêm trường học"
+          icon="pi pi-plus"
+          size="small"
+          (click)="openSchoolDetailModal(null, 'add')"
+        ></p-button>
+      </div>
+      <div class="row">
+        <div class="col-3">
+          <div class="d-flex flex-column gap-2">
+            <input
+              pInputText
+              id="filterName"
+              [(ngModel)]="filterName"
+              placeholder="Tìm kiếm theo tên trường..."
+              (ngModelChange)="onChangeFilterName($event)"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
     <p-table
       [value]="schoolList"
       styleClass="p-datatable-gridlines"
       [tableStyle]="{ 'min-width': '50rem' }"
     >
-      <ng-template pTemplate="caption">
-        <div class="d-flex justify-content-between align-items-center">
-          <p style="margin-bottom: 0">Trường học</p>
-          <p-button
-            label="Thêm trường học"
-            icon="pi pi-plus"
-            size="small"
-            (click)="openSchoolDetailModal(null, 'add')"
-          ></p-button>
-        </div>
-      </ng-template>
       <ng-template pTemplate="header">
         <tr>
           <th>Tên trường</th>
           <th>Địa chỉ</th>
-          <th>Thao tác</th>
+          <th style="width: 15%">Thao tác</th>
         </tr>
       </ng-template>
       <ng-template pTemplate="body" let-school>
@@ -45,6 +60,13 @@
                 (click)="confirmDelete($event, school)"
               ></p-button>
             </div>
+          </td>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="emptymessage">
+        <tr>
+          <td [attr.colspan]="3" [className]="'text-center'">
+            Không có dữ liệu
           </td>
         </tr>
       </ng-template>

@@ -33,28 +33,7 @@ export class DetailModalClassComponent implements OnInit {
   ngOnInit() {
     this.classForm.patchValue(this.config.data?.class);
     this.mode = this.config.data?.mode;
-    console.log(
-      '🚀 ~ DetailModalClassComponent ~ ngOnInit ~ this.mode:',
-      this.mode
-    );
-    this.getAllSchool();
-  }
-
-  async getAllSchool() {
-    this.httpProvider.getAllSchool().subscribe(
-      (data: any) => {
-        this.schoolList = data;
-      },
-      (error: any) => {
-        if (error) {
-          if (error.status == 404) {
-            if (error.error && error.error.message) {
-              this.schoolList = [];
-            }
-          }
-        }
-      }
-    );
+    this.schoolList = this.config.data?.schoolList;
   }
 
   handleChangeSchool(event: any) {

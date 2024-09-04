@@ -5,6 +5,7 @@ import { HttpProviderService } from '../../service/http-provider.service';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { DetailModalSchoolComponent } from '../detail-modal-school/detail-modal-school.component';
 import { ConfirmationService, MessageService } from 'primeng/api';
+import { debounceTime, Subject, Subscription } from 'rxjs';
 
 interface PageEvent {
   first: number;
@@ -28,6 +29,9 @@ export class SchoolComponent implements OnInit {
   pageSize: number = 5;
   currentPage: number = 0;
   first: number = 0;
+  filterName: string = '';
+  private filterSubject: Subject<void> = new Subject<void>();
+  private filterSubscription: Subscription = new Subscription();
 
   constructor(
     private router: Router,
@@ -42,6 +46,17 @@ export class SchoolComponent implements OnInit {
 
   ngOnInit(): void {
     this.getSchools(this.currentPage + 1, this.pageSize);
+
+    this.filterSubscription = this.filterSubject
+      .pipe(debounceTime(300))
+      .subscribe(() => {
+        this.getSchools(this.currentPage, this.pageSize, this.filterName);
+      });
+  }
+
+  onChangeFilterName(event: any) {
+    this.filterName = event;
+    this.filterSubject.next();
   }
 
   onPageChange(event: PageEvent) {
@@ -79,25 +94,31 @@ export class SchoolComponent implements OnInit {
     );
   }
 
-  async getSchools(page: number, pageSize: number) {
-    this.httpProvider.getSchools({ page: page, pageSize: pageSize }).subscribe(
-      (data: any) => {
-        this.schoolList = data.results;
-        this.totalRecords = data.totalRecords;
-        this.pageSize = data.pageSize;
-        this.currentPage = data.currentPage;
-        this.totalPages = data.totalPages;
-      },
-      (error: any) => {
-        if (error) {
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Lỗi',
-            detail: 'Có lỗi xảy ra khi GET danh sách trường học',
-          });
+  async getSchools(page: number, pageSize: number, search?: string) {
+    this.httpProvider
+      .getSchools({
+        page: page,
+        pageSize: pageSize,
+        ...(search && { search: search }),
+      })
+      .subscribe(
+        (data: any) => {
+          this.schoolList = data.results;
+          this.totalRecords = data.totalRecords;
+          this.pageSize = data.pageSize;
+          this.currentPage = data.currentPage;
+          this.totalPages = data.totalPages;
+        },
+        (error: any) => {
+          if (error) {
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Lỗi',
+              detail: 'Có lỗi xảy ra khi GET danh sách trường học',
+            });
+          }
         }
-      }
-    );
+      );
   }
 
   openSchoolDetailModal(school: any, mode: any) {

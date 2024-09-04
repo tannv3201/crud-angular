@@ -1,11 +1,11 @@
 import { Component, Input, OnInit, Type, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
-import { NgbModal, NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
-import { ToastrService } from 'ngx-toastr';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { HttpProviderService } from '../../service/http-provider.service';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { DetailModalStudentComponent } from '../detail-modal-student/detail-modal-student.component';
+import { debounceTime, Subject, Subscription } from 'rxjs';
 
 interface PageEvent {
   first: number;
@@ -23,12 +23,17 @@ export class StudentComponent implements OnInit {
   @ViewChild(DetailModalStudentComponent)
   detailModalClassComponent!: DetailModalStudentComponent;
   closeResult = '';
-  studentList: any = [];
+  studentList: any[] = [];
+  classList: any[] = [];
   totalRecords: number = 0;
   totalPages: number = 0;
   pageSize: number = 5;
   currentPage: number = 0;
   first: number = 0;
+  filterName: string = '';
+  filterClass: string = '';
+  private filterSubject: Subject<void> = new Subject<void>();
+  private filterSubscription: Subscription = new Subscription();
   constructor(
     private router: Router,
     private confirmationService: ConfirmationService,
@@ -42,6 +47,18 @@ export class StudentComponent implements OnInit {
 
   ngOnInit(): void {
     this.getStudents(this.currentPage + 1, this.pageSize);
+    this.getAllClass();
+
+    this.filterSubscription = this.filterSubject
+      .pipe(debounceTime(300))
+      .subscribe(() => {
+        this.getStudents(
+          this.currentPage,
+          this.pageSize,
+          this.filterName,
+          this.filterClass
+        );
+      });
   }
 
   onPageChange(event: PageEvent) {
@@ -51,9 +68,36 @@ export class StudentComponent implements OnInit {
     this.getStudents(event.page + 1, event.rows);
   }
 
+  async getAllClass() {
+    this.httpProvider.getAllClass().subscribe(
+      (data: any) => {
+        this.classList = data;
+      },
+      (error: any) => {
+        if (error) {
+          if (error.status == 404) {
+            if (error.error && error.error.message) {
+              this.classList = [];
+            }
+          }
+        }
+      }
+    );
+  }
+
   changeRowsPerPage(event: any) {
     this.pageSize = event;
     this.getStudents(this.currentPage, event);
+  }
+
+  onChangeFilterName(event: any) {
+    this.filterName = event;
+    this.filterSubject.next();
+  }
+
+  onChangeFilterClass(event: any) {
+    this.filterClass = event.value;
+    this.filterSubject.next();
   }
 
   options = [
@@ -79,12 +123,24 @@ export class StudentComponent implements OnInit {
     );
   }
 
-  async getStudents(page: number, pageSize: number) {
+  async getStudents(
+    page: number,
+    pageSize: number,
+    search?: string,
+    classId?: string
+  ) {
     this.httpProvider
-      .getStudents({ has_class: true, page: page, pageSize: pageSize })
+      .getStudents({
+        has_class: true,
+        page: page,
+        pageSize: pageSize,
+        ...(search && { search: search }),
+        ...(classId && { classId: classId }),
+      })
       .subscribe(
         (data: any) => {
-          this.studentList = data?.results;
+          console.log('🚀 ~ StudentComponent ~ data?.results:', data?.results);
+          this.studentList = data.results;
           this.totalRecords = data.totalRecords;
           this.pageSize = data.pageSize;
           this.currentPage = data.currentPage;
@@ -121,8 +177,10 @@ export class StudentComponent implements OnInit {
       data: {
         student: studentData,
         mode: mode,
+        classList: this.classList,
       },
     });
+
     this.ref.onClose.subscribe((res) => {
       if (res) {
         if (mode === 'add') {
@@ -185,6 +243,10 @@ export class StudentComponent implements OnInit {
   }
 
   ngOnDestroy() {
+    if (this.filterSubscription) {
+      this.filterSubscription.unsubscribe();
+    }
+
     if (this.ref) {
       this.ref.close();
     }

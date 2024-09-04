@@ -15,6 +15,6 @@ export class AppComponent {
   }
 
   HomeClick() {
-    this.router.navigate(['Home']);
+    this.router.navigate(['/school']);
   }
 }
