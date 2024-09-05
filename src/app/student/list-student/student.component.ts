@@ -220,6 +220,7 @@ export class StudentComponent implements OnInit {
         student: studentData,
         mode: mode,
         classList: this.classList,
+        schoolList: this.schoolList,
       },
     });
 

@@ -13,6 +13,8 @@ export class DetailModalStudentComponent implements OnInit {
   studentForm: FormGroup;
   mode: any;
   classList: any[] = [];
+  classListProp: any[] = [];
+  schoolList: any[] = [];
 
   constructor(
     public ref: DynamicDialogRef,
@@ -24,6 +26,7 @@ export class DetailModalStudentComponent implements OnInit {
     this.studentForm = this.fb.group({
       name: ['', Validators.required], // Required validation
       classroom_id: ['', Validators.required],
+      school_id: ['', Validators.required],
       id: [''],
     });
   }
@@ -31,17 +34,25 @@ export class DetailModalStudentComponent implements OnInit {
   ngOnInit() {
     this.studentForm.patchValue(this.config.data?.student);
     this.mode = this.config.data?.mode;
-    this.classList = this.config.data?.classList;
+    this.classListProp = this.config.data?.classList;
+    this.schoolList = this.config.data?.schoolList;
   }
 
-  handleChangeClass(event: any) {
-    this.studentForm.controls['classroom_id'].patchValue(event.value);
+  handleChangeDropdown(event: any, field: string) {
+    this.studentForm.controls[field].patchValue(event.value);
+    if (field === 'school_id') {
+      this.classList = this.classListProp.filter(
+        (item) => item.school_id == event.value
+      );
+      this.studentForm.controls['classroom_id'].patchValue('');
+    }
+    console.log('aaaa', this.studentForm.value);
   }
 
   submit() {
     if (this.studentForm.valid) {
       if (this.mode == 'add') {
-        const { id, ...dataSubmit } = this.studentForm.value;
+        const { id, school_id, ...dataSubmit } = this.studentForm.value;
         this.httpProvider.createStudent(dataSubmit).subscribe(
           (data: any) => {
             if (data) {
