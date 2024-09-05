@@ -35,14 +35,14 @@
         filterBy="name"
         [showClear]="mode === 'view' ? false : true"
         placeholder="Chọn trường"
-        formControlName="schoolId"
+        formControlName="school_id"
         (onChange)="handleChangeSchool($event)"
         [readonly]="mode === 'view'"
         class=""
         [ngClass]="{
           'is-invalid ng-dirty ng-invalid':
-            classForm.get('schoolId')?.invalid &&
-            classForm.get('schoolId')?.touched
+            classForm.get('school_id')?.invalid &&
+            classForm.get('school_id')?.touched
         }"
       >
         <ng-template pTemplate="selectedItem" let-selectedOption>
@@ -58,8 +58,8 @@
       </p-dropdown>
       <div
         *ngIf="
-          classForm.get('schoolId')?.invalid &&
-          classForm.get('schoolId')?.touched
+          classForm.get('school_id')?.invalid &&
+          classForm.get('school_id')?.touched
         "
         class="invalid-feedback"
       >

@@ -19,12 +19,12 @@ var httpLink = {
   updateSchool: apiUrl + '/school/update',
   deleteSchool: apiUrl + '/school/delete',
 
-  createClass: apiUrl + '/class/create',
-  getAllClass: apiUrl + '/class/all',
-  getClasses: apiUrl + '/class/list',
-  getDetailClass: apiUrl + '/class',
-  updateClass: apiUrl + '/class/update',
-  deleteClass: apiUrl + '/class/delete',
+  createClass: apiUrl + '/classroom/create',
+  getAllClass: apiUrl + '/classroom/all',
+  getClasses: apiUrl + '/classroom/list',
+  getDetailClass: apiUrl + '/classroom',
+  updateClass: apiUrl + '/classroom/update',
+  deleteClass: apiUrl + '/classroom/delete',
 
   createStudent: apiUrl + '/student/create',
   getAllStudent: apiUrl + '/student/all',

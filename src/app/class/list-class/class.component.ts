@@ -62,26 +62,46 @@ export class ClassComponent implements OnInit {
       });
   }
 
-  onChangeFilterName(event: any) {
-    this.filterName = event;
-    this.filterSubject.next();
-  }
-
-  onChangeFilterSchool(event: any) {
-    this.filterSchool = event.value;
-    this.filterSubject.next();
-  }
-
   onPageChange(event: PageEvent) {
     this.first = event.first;
     this.pageSize = event.rows;
     this.currentPage = event.page;
-    this.getClasses(event.page + 1, event.rows);
+    this.onFilter(
+      this.currentPage + 1,
+      this.pageSize,
+      this.filterName,
+      this.filterSchool
+    );
   }
 
   changeRowsPerPage(event: any) {
     this.pageSize = event;
-    this.getClasses(this.currentPage, event);
+    this.onFilter(
+      this.currentPage,
+      this.pageSize,
+      this.filterName,
+      this.filterSchool
+    );
+  }
+
+  onFilter(
+    page?: number,
+    pageSize?: number,
+    search?: string,
+    school_id?: string,
+    type?: string
+  ) {
+    if (type === 'filter') {
+      this.currentPage = (!!search || !!school_id ? page : 1) || 1;
+      this.first = (!search || !school_id ? 0 : this.first) || 0;
+    } else {
+      this.currentPage = page || 1;
+    }
+    this.pageSize = pageSize || 5;
+    this.filterName = search || '';
+    this.filterSchool = school_id || '';
+
+    this.filterSubject.next();
   }
 
   options = [
@@ -94,7 +114,7 @@ export class ClassComponent implements OnInit {
     page: number,
     pageSize: number,
     search?: string,
-    schoolId?: string
+    school_id?: string
   ) {
     this.httpProvider
       .getClasses({
@@ -102,7 +122,7 @@ export class ClassComponent implements OnInit {
         page: page,
         pageSize: pageSize,
         ...(search && { search: search }),
-        ...(schoolId && { schoolId: schoolId }),
+        ...(school_id && { school_id: school_id }),
       })
       .subscribe(
         (data: any) => {
@@ -201,8 +221,8 @@ export class ClassComponent implements OnInit {
     });
   }
 
-  deleteClass(classId: any) {
-    this.httpProvider.deleteClass(classId).subscribe(
+  deleteClass(classroom_id: any) {
+    this.httpProvider.deleteClass(classroom_id).subscribe(
       (data: any) => {
         this.getClasses(this.currentPage, this.pageSize);
         this.messageService.add({
@@ -225,6 +245,7 @@ export class ClassComponent implements OnInit {
     if (this.filterSubscription) {
       this.filterSubscription.unsubscribe();
     }
+
     if (this.ref) {
       this.ref.close();
     }

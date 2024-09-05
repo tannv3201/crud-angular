@@ -1,6 +1,4 @@
-import { Component, Input, OnInit, Type, ViewChild } from '@angular/core';
-import { Router } from '@angular/router';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { HttpProviderService } from '../../service/http-provider.service';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { ConfirmationService, MessageService } from 'primeng/api';
@@ -25,6 +23,7 @@ export class StudentComponent implements OnInit {
   closeResult = '';
   studentList: any[] = [];
   classList: any[] = [];
+  schoolList: any[] = [];
   totalRecords: number = 0;
   totalPages: number = 0;
   pageSize: number = 5;
@@ -32,12 +31,11 @@ export class StudentComponent implements OnInit {
   first: number = 0;
   filterName: string = '';
   filterClass: string = '';
+  filterSchool: string = '';
   private filterSubject: Subject<void> = new Subject<void>();
   private filterSubscription: Subscription = new Subscription();
   constructor(
-    private router: Router,
     private confirmationService: ConfirmationService,
-    private modalService: NgbModal,
     private httpProvider: HttpProviderService,
     private dialogService: DialogService,
     private messageService: MessageService
@@ -48,6 +46,7 @@ export class StudentComponent implements OnInit {
   ngOnInit(): void {
     this.getStudents(this.currentPage + 1, this.pageSize);
     this.getAllClass();
+    this.getAllSchool();
 
     this.filterSubscription = this.filterSubject
       .pipe(debounceTime(300))
@@ -56,16 +55,10 @@ export class StudentComponent implements OnInit {
           this.currentPage,
           this.pageSize,
           this.filterName,
-          this.filterClass
+          this.filterClass,
+          this.filterSchool
         );
       });
-  }
-
-  onPageChange(event: PageEvent) {
-    this.first = event.first;
-    this.pageSize = event.rows;
-    this.currentPage = event.page;
-    this.getStudents(event.page + 1, event.rows);
   }
 
   async getAllClass() {
@@ -85,18 +78,65 @@ export class StudentComponent implements OnInit {
     );
   }
 
+  async getAllSchool() {
+    this.httpProvider.getAllSchool().subscribe(
+      (data: any) => {
+        this.schoolList = data;
+      },
+      (error: any) => {
+        if (error) {
+          if (error.status == 404) {
+            if (error.error && error.error.message) {
+              this.schoolList = [];
+            }
+          }
+        }
+      }
+    );
+  }
+
+  onPageChange(event: PageEvent) {
+    this.first = event.first;
+    this.pageSize = event.rows;
+    this.currentPage = event.page;
+    this.onFilter(
+      this.currentPage + 1,
+      this.pageSize,
+      this.filterName,
+      this.filterClass,
+      this.filterSchool
+    );
+  }
+
   changeRowsPerPage(event: any) {
     this.pageSize = event;
-    this.getStudents(this.currentPage, event);
+    this.onFilter(
+      this.currentPage,
+      this.pageSize,
+      this.filterName,
+      this.filterClass
+    );
   }
 
-  onChangeFilterName(event: any) {
-    this.filterName = event;
-    this.filterSubject.next();
-  }
+  onFilter(
+    page?: number,
+    pageSize?: number,
+    search?: string,
+    classroom_id?: string,
+    school_id?: string,
+    type?: string
+  ) {
+    if (type === 'filter') {
+      this.currentPage = (!!search || !!classroom_id ? page : 1) || 1;
+      this.first = (!search || !classroom_id ? 0 : this.first) || 0;
+    } else {
+      this.currentPage = page || 1;
+    }
+    this.pageSize = pageSize || 5;
+    this.filterName = search || '';
+    this.filterClass = classroom_id || '';
+    this.filterSchool = school_id || '';
 
-  onChangeFilterClass(event: any) {
-    this.filterClass = event.value;
     this.filterSubject.next();
   }
 
@@ -107,7 +147,7 @@ export class StudentComponent implements OnInit {
   ];
 
   async getAllStudent() {
-    this.httpProvider.getAllStudent({ has_class: true }).subscribe(
+    this.httpProvider.getAllStudent({ has_classroom: true }).subscribe(
       (data: any) => {
         this.studentList = data;
       },
@@ -127,19 +167,21 @@ export class StudentComponent implements OnInit {
     page: number,
     pageSize: number,
     search?: string,
-    classId?: string
+    classroom_id?: string,
+    school_id?: string
   ) {
     this.httpProvider
       .getStudents({
-        has_class: true,
+        has_classroom: true,
+        has_school: true,
         page: page,
         pageSize: pageSize,
         ...(search && { search: search }),
-        ...(classId && { classId: classId }),
+        ...(classroom_id && { classroom_id: classroom_id }),
+        ...(school_id && { school_id: school_id }),
       })
       .subscribe(
         (data: any) => {
-          console.log('🚀 ~ StudentComponent ~ data?.results:', data?.results);
           this.studentList = data.results;
           this.totalRecords = data.totalRecords;
           this.pageSize = data.pageSize;
@@ -221,8 +263,8 @@ export class StudentComponent implements OnInit {
     });
   }
 
-  deleteStudent(studentId: any) {
-    this.httpProvider.deleteStudent(studentId).subscribe(
+  deleteStudent(student_id: any) {
+    this.httpProvider.deleteStudent(student_id).subscribe(
       (data: any) => {
         this.getStudents(this.currentPage, this.pageSize);
         this.messageService.add({

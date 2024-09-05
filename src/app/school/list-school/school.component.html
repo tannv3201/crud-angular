@@ -20,7 +20,7 @@
               id="filterName"
               [(ngModel)]="filterName"
               placeholder="Tìm kiếm theo tên trường..."
-              (ngModelChange)="onChangeFilterName($event)"
+              (ngModelChange)="onFilter(1, pageSize, $event, 'filter')"
             />
           </div>
         </div>

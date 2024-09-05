@@ -1,6 +1,4 @@
-import { Component, Input, OnInit, Type, ViewChild } from '@angular/core';
-import { Router } from '@angular/router';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { HttpProviderService } from '../../service/http-provider.service';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { DetailModalSchoolComponent } from '../detail-modal-school/detail-modal-school.component';
@@ -34,9 +32,7 @@ export class SchoolComponent implements OnInit {
   private filterSubscription: Subscription = new Subscription();
 
   constructor(
-    private router: Router,
     private confirmationService: ConfirmationService,
-    private modalService: NgbModal,
     private httpProvider: HttpProviderService,
     private dialogService: DialogService,
     private messageService: MessageService
@@ -54,21 +50,28 @@ export class SchoolComponent implements OnInit {
       });
   }
 
-  onChangeFilterName(event: any) {
-    this.filterName = event;
-    this.filterSubject.next();
-  }
-
   onPageChange(event: PageEvent) {
     this.first = event.first;
     this.pageSize = event.rows;
     this.currentPage = event.page;
-    this.getSchools(event.page + 1, event.rows);
+    this.onFilter(this.currentPage + 1, this.pageSize, this.filterName);
   }
 
   changeRowsPerPage(event: any) {
     this.pageSize = event;
-    this.getSchools(this.currentPage, event);
+    this.onFilter(this.currentPage, this.pageSize, this.filterName);
+  }
+
+  onFilter(page?: number, pageSize?: number, search?: string, type?: string) {
+    if (type === 'filter') {
+      this.currentPage = (!!search ? page : 1) || 1;
+      this.first = (!search ? 0 : this.first) || 0;
+    } else {
+      this.currentPage = page || 1;
+    }
+    this.pageSize = pageSize || 5;
+    this.filterName = search || '';
+    this.filterSubject.next();
   }
 
   options = [
@@ -183,8 +186,8 @@ export class SchoolComponent implements OnInit {
     });
   }
 
-  deleteSchool(schoolId: any) {
-    this.httpProvider.deleteSchool(schoolId).subscribe(
+  deleteSchool(school_id: any) {
+    this.httpProvider.deleteSchool(school_id).subscribe(
       (data: any) => {
         this.getSchools(this.currentPage, this.pageSize);
         this.messageService.add({
@@ -204,6 +207,10 @@ export class SchoolComponent implements OnInit {
   }
 
   ngOnDestroy() {
+    if (this.filterSubscription) {
+      this.filterSubscription.unsubscribe();
+    }
+
     if (this.ref) {
       this.ref.close();
     }

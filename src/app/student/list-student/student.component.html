@@ -21,7 +21,16 @@
                 id="filterName"
                 [(ngModel)]="filterName"
                 placeholder="Tìm kiếm theo tên học sinh..."
-                (ngModelChange)="onChangeFilterName($event)"
+                (ngModelChange)="
+                  onFilter(
+                    1,
+                    pageSize,
+                    $event,
+                    filterClass,
+                    filterSchool,
+                    'filter'
+                  )
+                "
               />
             </div>
           </div>
@@ -33,7 +42,16 @@
               [filter]="true"
               filterBy="name"
               placeholder="Tìm kiếm theo lớp..."
-              (onChange)="onChangeFilterClass($event)"
+              (onChange)="
+                onFilter(
+                  1,
+                  pageSize,
+                  filterName,
+                  $event?.value,
+                  filterSchool,
+                  'filter'
+                )
+              "
               [showClear]="true"
             >
               <ng-template pTemplate="selectedItem" let-selectedOption>
@@ -41,9 +59,41 @@
                   <div>{{ selectedOption.name }}</div>
                 </div>
               </ng-template>
-              <ng-template let-class pTemplate="item">
+              <ng-template let-classroom pTemplate="item">
                 <div class="flex align-items-center gap-2">
-                  <div>{{ class.name }}</div>
+                  <div>{{ classroom.name }}</div>
+                </div>
+              </ng-template>
+            </p-dropdown>
+          </div>
+          <div class="col-3">
+            <p-dropdown
+              [options]="schoolList"
+              optionLabel="name"
+              optionValue="id"
+              [filter]="true"
+              filterBy="name"
+              placeholder="Tìm kiếm theo trường..."
+              (onChange)="
+                onFilter(
+                  1,
+                  pageSize,
+                  filterName,
+                  filterClass,
+                  $event?.value,
+                  'filter'
+                )
+              "
+              [showClear]="true"
+            >
+              <ng-template pTemplate="selectedItem" let-selectedOption>
+                <div class="flex align-items-center gap-2">
+                  <div>{{ selectedOption.name }}</div>
+                </div>
+              </ng-template>
+              <ng-template let-classroom pTemplate="item">
+                <div class="flex align-items-center gap-2">
+                  <div>{{ classroom.name }}</div>
                 </div>
               </ng-template>
             </p-dropdown>
@@ -61,13 +111,15 @@
         <tr>
           <th>Tên học sinh</th>
           <th>Tên lớp</th>
+          <th>Tên trường</th>
           <th style="width: 15%; text-align: center">Thao tác</th>
         </tr>
       </ng-template>
       <ng-template pTemplate="body" let-student>
         <tr>
           <td>{{ student?.name }}</td>
-          <td>{{ student?.class_?.name }}</td>
+          <td>{{ student?.classroom?.name }}</td>
+          <td>{{ student?.school?.name }}</td>
           <td>
             <div class="row">
               <div class="col-sm">

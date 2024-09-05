@@ -25,7 +25,7 @@ export class DetailModalClassComponent implements OnInit {
   ) {
     this.classForm = this.fb.group({
       name: ['', Validators.required], // Required validation
-      schoolId: ['', Validators.required],
+      school_id: ['', Validators.required],
       id: [''],
     });
   }
@@ -37,13 +37,17 @@ export class DetailModalClassComponent implements OnInit {
   }
 
   handleChangeSchool(event: any) {
-    this.classForm.controls['schoolId'].patchValue(event.value);
+    this.classForm.controls['school_id'].patchValue(event.value);
   }
 
   submit() {
     if (this.classForm.valid) {
       if (this.mode == 'add') {
         const { id, ...dataSubmit } = this.classForm.value;
+        console.log(
+          '🚀 ~ DetailModalClassComponent ~ submit ~ dataSubmit:',
+          dataSubmit
+        );
         this.httpProvider.createClass(dataSubmit).subscribe(
           (data: any) => {
             if (data) {

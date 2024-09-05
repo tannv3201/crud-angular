@@ -23,7 +23,7 @@ export class DetailModalStudentComponent implements OnInit {
   ) {
     this.studentForm = this.fb.group({
       name: ['', Validators.required], // Required validation
-      classId: ['', Validators.required],
+      classroom_id: ['', Validators.required],
       id: [''],
     });
   }
@@ -35,7 +35,7 @@ export class DetailModalStudentComponent implements OnInit {
   }
 
   handleChangeClass(event: any) {
-    this.studentForm.controls['classId'].patchValue(event.value);
+    this.studentForm.controls['classroom_id'].patchValue(event.value);
   }
 
   submit() {

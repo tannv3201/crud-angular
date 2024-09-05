@@ -20,7 +20,9 @@
               id="filterName"
               [(ngModel)]="filterName"
               placeholder="Tìm kiếm theo tên lớp..."
-              (ngModelChange)="onChangeFilterName($event)"
+              (ngModelChange)="
+                onFilter(1, pageSize, $event, filterSchool, 'filter')
+              "
             />
           </div>
         </div>
@@ -33,7 +35,9 @@
             filterBy="name"
             placeholder="Tìm kiếm theo trường..."
             [showClear]="true"
-            (onChange)="onChangeFilterSchool($event)"
+            (onChange)="
+              onFilter(1, pageSize, filterName, $event?.value, 'filter')
+            "
           >
             <ng-template pTemplate="selectedItem" let-selectedOption>
               <div class="flex align-items-center gap-2">
