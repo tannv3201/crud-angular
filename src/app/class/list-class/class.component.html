@@ -27,10 +27,9 @@
           </div>
         </div>
         <div class="col-3">
-          <p-dropdown
+          <p-multiSelect
             [options]="schoolList"
             optionLabel="name"
-            optionValue="id"
             [filter]="true"
             filterBy="name"
             placeholder="Tìm kiếm theo trường..."
@@ -38,18 +37,8 @@
             (onChange)="
               onFilter(1, pageSize, filterName, $event?.value, 'filter')
             "
-          >
-            <ng-template pTemplate="selectedItem" let-selectedOption>
-              <div class="flex align-items-center gap-2">
-                <div>{{ selectedOption.name }}</div>
-              </div>
-            </ng-template>
-            <ng-template let-school pTemplate="item">
-              <div class="flex align-items-center gap-2">
-                <div>{{ school.name }}</div>
-              </div>
-            </ng-template>
-          </p-dropdown>
+            (onClear)="onFilter(1, pageSize, filterName, [], 'filter')"
+          />
         </div>
       </div>
     </div>

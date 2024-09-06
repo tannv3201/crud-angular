@@ -30,8 +30,8 @@ export class StudentComponent implements OnInit {
   currentPage: number = 0;
   first: number = 0;
   filterName: string = '';
-  filterClass: string = '';
-  filterSchool: string = '';
+  filterClass: any[] = [];
+  filterSchool: any[] = [];
   private filterSubject: Subject<void> = new Subject<void>();
   private filterSubscription: Subscription = new Subscription();
   constructor(
@@ -122,20 +122,30 @@ export class StudentComponent implements OnInit {
     page?: number,
     pageSize?: number,
     search?: string,
-    classroom_id?: string,
-    school_id?: string,
+    selected_classrooms?: any[],
+    selected_schools?: any[],
     type?: string
   ) {
     if (type === 'filter') {
-      this.currentPage = (!!search || !!classroom_id ? page : 1) || 1;
-      this.first = (!search || !classroom_id ? 0 : this.first) || 0;
+      this.currentPage =
+        (!!search ||
+        (selected_classrooms || [])?.length > 0 ||
+        (selected_schools || [])?.length > 0
+          ? page
+          : 1) || 1;
+      this.first =
+        (!search ||
+        selected_classrooms?.length === 0 ||
+        selected_schools?.length === 0
+          ? 0
+          : this.first) || 0;
     } else {
       this.currentPage = page || 1;
     }
     this.pageSize = pageSize || 5;
     this.filterName = search || '';
-    this.filterClass = classroom_id || '';
-    this.filterSchool = school_id || '';
+    this.filterClass = selected_classrooms || [];
+    this.filterSchool = selected_schools || [];
 
     this.filterSubject.next();
   }
@@ -167,8 +177,8 @@ export class StudentComponent implements OnInit {
     page: number,
     pageSize: number,
     search?: string,
-    classroom_id?: string,
-    school_id?: string
+    selected_classrooms?: any[],
+    selected_schools?: any[]
   ) {
     this.httpProvider
       .getStudents({
@@ -177,8 +187,16 @@ export class StudentComponent implements OnInit {
         page: page,
         pageSize: pageSize,
         ...(search && { search: search }),
-        ...(classroom_id && { classroom_id: classroom_id }),
-        ...(school_id && { school_id: school_id }),
+        ...((selected_classrooms || [])?.length > 0 && {
+          classroom_id: (selected_classrooms || [])
+            .map((classroom: any) => classroom.id)
+            .join(','),
+        }),
+        ...((selected_schools || [])?.length > 0 && {
+          school_id: (selected_schools || [])
+            .map((school: any) => school.id)
+            .join(','),
+        }),
       })
       .subscribe(
         (data: any) => {

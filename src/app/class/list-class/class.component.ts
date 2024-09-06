@@ -31,7 +31,7 @@ export class ClassComponent implements OnInit {
   currentPage: number = 0;
   first: number = 0;
   filterName: string = '';
-  filterSchool: string = '';
+  filterSchool: any[] = [];
   private filterSubject: Subject<void> = new Subject<void>();
   private filterSubscription: Subscription = new Subscription();
 
@@ -88,18 +88,22 @@ export class ClassComponent implements OnInit {
     page?: number,
     pageSize?: number,
     search?: string,
-    school_id?: string,
+    selected_schools?: any[],
     type?: string
   ) {
+    console.log('🚀 ~ ClassComponent ~ selected_schools:', selected_schools);
     if (type === 'filter') {
-      this.currentPage = (!!search || !!school_id ? page : 1) || 1;
-      this.first = (!search || !school_id ? 0 : this.first) || 0;
+      this.currentPage =
+        (!!search || (selected_schools || []).length > 0 ? page : 1) || 1;
+      this.first =
+        (!search || (selected_schools || []).length === 0 ? 0 : this.first) ||
+        0;
     } else {
       this.currentPage = page || 1;
     }
     this.pageSize = pageSize || 5;
     this.filterName = search || '';
-    this.filterSchool = school_id || '';
+    this.filterSchool = selected_schools || [];
 
     this.filterSubject.next();
   }
@@ -114,7 +118,7 @@ export class ClassComponent implements OnInit {
     page: number,
     pageSize: number,
     search?: string,
-    school_id?: string
+    selected_schools?: any[]
   ) {
     this.httpProvider
       .getClasses({
@@ -122,7 +126,11 @@ export class ClassComponent implements OnInit {
         page: page,
         pageSize: pageSize,
         ...(search && { search: search }),
-        ...(school_id && { school_id: school_id }),
+        ...((selected_schools || []).length > 0 && {
+          school_id: selected_schools
+            ?.map((school: any) => school.id)
+            .join(','),
+        }),
       })
       .subscribe(
         (data: any) => {

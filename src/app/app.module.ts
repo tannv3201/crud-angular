@@ -37,6 +37,7 @@ import { PaginatorModule } from 'primeng/paginator';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { StudentsComponent } from './students/students.component';
 import { AutoFocusModule } from 'primeng/autofocus';
+import { MultiSelectModule } from 'primeng/multiselect';
 
 @NgModule({
   declarations: [
@@ -70,6 +71,7 @@ import { AutoFocusModule } from 'primeng/autofocus';
     PaginatorModule,
     ConfirmDialogModule,
     AutoFocusModule,
+    MultiSelectModule,
   ],
   providers: [
     DialogService,

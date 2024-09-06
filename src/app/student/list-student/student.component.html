@@ -35,13 +35,14 @@
             </div>
           </div>
           <div class="col-3">
-            <p-dropdown
+            <p-multiSelect
               [options]="classList"
               optionLabel="name"
-              optionValue="id"
+              placeholder="Select Cities"
               [filter]="true"
               filterBy="name"
               placeholder="Tìm kiếm theo lớp..."
+              [showClear]="true"
               (onChange)="
                 onFilter(
                   1,
@@ -52,28 +53,20 @@
                   'filter'
                 )
               "
-              [showClear]="true"
-            >
-              <ng-template pTemplate="selectedItem" let-selectedOption>
-                <div class="flex align-items-center gap-2">
-                  <div>{{ selectedOption.name }}</div>
-                </div>
-              </ng-template>
-              <ng-template let-classroom pTemplate="item">
-                <div class="flex align-items-center gap-2">
-                  <div>{{ classroom.name }}</div>
-                </div>
-              </ng-template>
-            </p-dropdown>
+              (onClear)="
+                onFilter(1, pageSize, filterName, [], filterSchool, 'filter')
+              "
+            />
           </div>
           <div class="col-3">
-            <p-dropdown
+            <p-multiSelect
               [options]="schoolList"
               optionLabel="name"
-              optionValue="id"
+              placeholder="Select Cities"
               [filter]="true"
               filterBy="name"
               placeholder="Tìm kiếm theo trường..."
+              [showClear]="true"
               (onChange)="
                 onFilter(
                   1,
@@ -84,19 +77,10 @@
                   'filter'
                 )
               "
-              [showClear]="true"
-            >
-              <ng-template pTemplate="selectedItem" let-selectedOption>
-                <div class="flex align-items-center gap-2">
-                  <div>{{ selectedOption.name }}</div>
-                </div>
-              </ng-template>
-              <ng-template let-classroom pTemplate="item">
-                <div class="flex align-items-center gap-2">
-                  <div>{{ classroom.name }}</div>
-                </div>
-              </ng-template>
-            </p-dropdown>
+              (onClear)="
+                onFilter(1, pageSize, filterName, filterClass, [], 'filter')
+              "
+            />
           </div>
         </div>
       </div>
