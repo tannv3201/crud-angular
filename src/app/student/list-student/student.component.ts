@@ -217,7 +217,7 @@ export class StudentComponent implements OnInit {
       baseZIndex: 10000,
       maximizable: true,
       data: {
-        student: studentData,
+        student: { ...studentData, school_id: studentData?.school?.id },
         mode: mode,
         classList: this.classList,
         schoolList: this.schoolList,

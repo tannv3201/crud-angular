@@ -36,6 +36,12 @@ export class DetailModalStudentComponent implements OnInit {
     this.mode = this.config.data?.mode;
     this.classListProp = this.config.data?.classList;
     this.schoolList = this.config.data?.schoolList;
+
+    if (this.mode == 'edit' || this.mode == 'view') {
+      this.classList = this.classListProp.filter(
+        (item) => item.school_id == this.studentForm.value?.school_id
+      );
+    }
   }
 
   handleChangeDropdown(event: any, field: string) {
